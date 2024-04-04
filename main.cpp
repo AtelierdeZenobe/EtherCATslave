@@ -5,8 +5,11 @@
 
 #include "mbed.h"
 #include "EasyCAT.h"
+#include <cstdint>
+#include <string>
 
-void Application();
+using namespace std;
+void Application(int count);
 //-----------------------------------------------------------
 
 EasyCAT EASYCAT;                    // Without any parameter pin 9 will be used 
@@ -22,16 +25,32 @@ int main()
         printf("Initialization failed \n");
     }
     
+    // From EasyCAT.h
+    /*
+    #define ESM_INIT                0x01                  // init
+    #define ESM_PREOP               0x02                  // pre-operational
+    #define ESM_BOOT                0x03                  // bootstrap
+    #define ESM_SAFEOP              0x04                  // safe-operational
+    #define ESM_OP                  0x08                  // operational
+    */
+    unsigned char status;
+    uint8_t uiStatus;
+    int sendCount = 0; //Will vary between 100 and 110
     while(1)
     {
         ThisThread::sleep_for(20ms);
-        EASYCAT.MainTask(); 
-        Application();
+        status = EASYCAT.MainTask();
+        uiStatus = static_cast<uint8_t>(status & 0x7F);
+        if(uiStatus < 4)
+            printf("Status: %u\n", uiStatus);
+
+        Application((sendCount%10) + 100);
+        sendCount++;
     }
 }
 
-void Application()
+void Application(int count)
 {
-    printf("Byte0: %d\n",EASYCAT.BufferOut.Byte[0]);                                          // Out from Master
-    EASYCAT.BufferIn.Byte[0]=0x21;                                      // In to Master
+    printf("BufferOut Byte0: %d\n",EASYCAT.BufferOut.Byte[0]);
+    EASYCAT.BufferIn.Byte[0]=count;    
 }
