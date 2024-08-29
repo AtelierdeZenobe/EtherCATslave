@@ -39,7 +39,9 @@ int main()
     while(1)
     {
         ThisThread::sleep_for(20ms);
-        status = EASYCAT.MainTask();
+
+        // Check state
+        status = EASYCAT.MainTask(); // Must be called cyclically
         uiStatus = static_cast<uint8_t>(status & 0x7F);
         if(uiStatus < 4)
             printf("Status: %u\n", uiStatus);
@@ -51,6 +53,14 @@ int main()
 
 void Application(int count)
 {
-    printf("BufferOut Byte0: %d\n",EASYCAT.BufferOut.Byte[0]);
-    EASYCAT.BufferIn.Byte[0]=count;    
+    //TODO: EasyCAT.h offers a Custom Mode allowing so specify a data type
+    printf("wanted distance MSB: %d\n",EASYCAT.BufferOut.Byte[0]);
+    printf("wanted distance: LSB: %d\n",EASYCAT.BufferOut.Byte[1]);
+    printf("wanted angle MSB: %d\n",EASYCAT.BufferOut.Byte[2]);
+    printf("wanted speed LSB: %d\n",EASYCAT.BufferOut.Byte[3]);
+
+    EASYCAT.BufferIn.Byte[0]=1;
+    EASYCAT.BufferIn.Byte[1]=2;
+    EASYCAT.BufferIn.Byte[2]=3;
+    EASYCAT.BufferIn.Byte[3]=4;    
 }
