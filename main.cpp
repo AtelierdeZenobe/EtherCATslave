@@ -48,19 +48,24 @@ int main()
 
         Application((sendCount%10) + 100);
         sendCount++;
+
+        //ThisThread::sleep_for(1000);
     }
 }
 
 void Application(int count)
 {
+    if(count % 100 == 0)
+    {
+        printf("wanted distance MSB: %02x\n",EASYCAT.BufferOut.Byte[0]);
+        printf("wanted distance: LSB: %02x\n",EASYCAT.BufferOut.Byte[1]);
+        printf("wanted angle MSB: %02x\n",EASYCAT.BufferOut.Byte[2]);
+        printf("wanted angle LSB: %02x\n",EASYCAT.BufferOut.Byte[3]);
+    }
     //TODO: EasyCAT.h offers a Custom Mode allowing so specify a data type
-    printf("wanted distance MSB: %d\n",EASYCAT.BufferOut.Byte[0]);
-    printf("wanted distance: LSB: %d\n",EASYCAT.BufferOut.Byte[1]);
-    printf("wanted angle MSB: %d\n",EASYCAT.BufferOut.Byte[2]);
-    printf("wanted speed LSB: %d\n",EASYCAT.BufferOut.Byte[3]);
 
-    EASYCAT.BufferIn.Byte[0]=1;
-    EASYCAT.BufferIn.Byte[1]=2;
-    EASYCAT.BufferIn.Byte[2]=3;
-    EASYCAT.BufferIn.Byte[3]=4;    
+    // state is one byte and other is 2 bytes
+    EASYCAT.BufferIn.Byte[0]=0x01;
+    EASYCAT.BufferIn.Byte[1]=0x02;
+    EASYCAT.BufferIn.Byte[2]=0x03;  
 }
